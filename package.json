@@ -1,13 +1,17 @@
 {
   "name": "logsapp",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "build": "npm install --prefix logsbackend && npm install --prefix logsfrontend && npm run build --prefix logsfrontend",
-    "start": "npm run start --prefix logsbackend"
+    "install": "npm install --prefix logsbackend && npm install --prefix logsfrontend",
+    "build": "npm run build --prefix logsfrontend",
+    "start": "node logsbackend/index.js",
+    "dev": "concurrently \"npm run dev --prefix logsbackend\" \"npm run start --prefix logsfrontend\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
