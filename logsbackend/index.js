@@ -4,7 +4,6 @@ const cors = require('cors');
 const path = require("path");
 
 const app = express();
-const __dirname=path.resolve();
 
 
 app.use(cors());
