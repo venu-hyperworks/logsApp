@@ -1,0 +1,13 @@
+{
+  "name": "logsapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix logsbackend && npm install --prefix logsfrontend && npm run build --prefix logsfrontend",
+    "start": "npm run start --prefix logsbackend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
