@@ -2,9 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 import path from "path";
+import express from 'express';
 
 const app = express();
 const __dirname=path.resolve();
+
 
 app.use(cors());
 app.use(express.json());
