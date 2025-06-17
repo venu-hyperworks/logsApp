@@ -23,7 +23,7 @@ export default function LogViewer() {
     const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
     useEffect(() => {
-         axiosInstance.get('/')
+         axiosInstance.get('')
             .then(res => {
                 setLogs(res.data.logs || []);
             })
