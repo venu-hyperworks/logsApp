@@ -29,6 +29,13 @@ export default function LogViewer() {
             })
             .catch(err => console.error('Error fetching logs:', err));
     }, [selectedFile]);
+      useEffect(() => {
+         axiosInstance.get('/api/read-log')
+            .then(res => {
+                setLogs(res.data.logs || []);
+            })
+            .catch(err => console.error('Error fetching logs:', err));
+    }, []);
 
     useEffect(() => {
         if (selectedFile === 'all') {
