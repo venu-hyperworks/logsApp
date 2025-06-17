@@ -7,7 +7,7 @@
     "start": "node index.js"
   },
   "keywords": [],
-  "type": "commonjs",    
+  "type": "commonjs",
   "author": "",
   "license": "ISC",
   "description": "",
