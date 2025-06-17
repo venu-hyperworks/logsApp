@@ -1,8 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-import path from "path";
-import express from 'express';
+const path = require("path");
 
 const app = express();
 const __dirname=path.resolve();
