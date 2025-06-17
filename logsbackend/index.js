@@ -10,7 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ MongoDB Atlas Connection
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI || "http://localhost:3001/api/read-log")
+
+
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
