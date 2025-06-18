@@ -10,7 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
@@ -28,7 +27,16 @@ const Log = mongoose.model('Log', logSchema, 'logentries');
 // API Route
 app.get('/api/read-log', async (req, res) => {
   try {
-    const logs = await Log.find({ type: 'log' });
+    // Calculate date 7 days ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    // Only fetch logs from the last 7 days
+    const logs = await Log.find({ 
+      type: 'log',
+      timestamp: { $gte: oneWeekAgo }
+    }).sort({ timestamp: -1 }); // Sort by newest first
+    
     res.json({ logs });
   } catch (error) {
     console.error("Error in /api/read-log:", error);

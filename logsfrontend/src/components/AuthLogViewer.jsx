@@ -1,8 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
-
 import { axiosInstance } from "../axios";
-
 
 const logRules = [
     { keywords: ['/api/login', '/logout', '/change-password', '/send-password-reset-link', '/auth'], file: 'auth' },
@@ -21,25 +18,34 @@ export default function LogViewer() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [filteredLogs, setFilteredLogs] = useState([]);
     const [sidebarExpanded, setSidebarExpanded] = useState(true);
+    const [loading, setLoading] = useState(false);
+
+    const fetchLogs = async () => {
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get('/api/read-log');
+            setLogs(res.data.logs || []);
+        } catch (err) {
+            console.error('Error fetching logs:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-         axiosInstance.get('/api/read-log')
-            .then(res => {
-                setLogs(res.data.logs || []);
-            })
-            .catch(err => console.error('Error fetching logs:', err));
+        fetchLogs();
     }, [selectedFile]);
-      useEffect(() => {
-         axiosInstance.get('/api/read-log')
-            .then(res => {
-                setLogs(res.data.logs || []);
-            })
-            .catch(err => console.error('Error fetching logs:', err));
-    }, []);
 
     useEffect(() => {
         if (selectedFile === 'all') {
-            setFilteredLogs(logs);
+            // Filter logs from the last 7 days
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            const recentLogs = logs.filter(log => 
+                new Date(log.timestamp) >= oneWeekAgo
+            );
+            setFilteredLogs(recentLogs);
             return;
         }
 
@@ -55,8 +61,12 @@ export default function LogViewer() {
         }
 
         const keywords = rule.keywords;
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
         const filtered = logs.filter(log =>
-            keywords.some(kw => log.route?.includes(kw))
+            keywords.some(kw => log.route?.includes(kw)) &&
+            new Date(log.timestamp) >= oneWeekAgo
         );
 
         setFilteredLogs(filtered);
@@ -127,13 +137,17 @@ export default function LogViewer() {
                     padding: '15px',
                     borderRadius: '8px',
                     whiteSpace: 'pre-wrap',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: loading ? 'center' : 'flex-start',
+                    alignItems: 'center',
                 }}
             >
-                {!selectedFile && (
+                {loading ? (
+                    <div style={{ fontSize: '24px' }}>Loading...</div>
+                ) : !selectedFile ? (
                     <h2 style={{ textAlign: 'center' }}>Welcome to log dashboard</h2>
-                )}
-
-                {selectedFile && filteredLogs.length === 0 ? (
+                ) : filteredLogs.length === 0 ? (
                     <p>No logs available for this category.</p>
                 ) : (
                     filteredLogs.map((log, idx) => (
@@ -143,6 +157,7 @@ export default function LogViewer() {
                                 borderBottom: '1px solid #444',
                                 paddingBottom: '5px',
                                 marginBottom: '10px',
+                                width: '100%',
                             }}
                         >
                             [{new Date(log.timestamp).toLocaleString()}] {log.message} | Route: {log.route || 'N/A'}
